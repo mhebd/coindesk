@@ -1,8 +1,26 @@
+import 'dart:convert';
+
+import 'package:coindesk/models/app_config.dart';
 import 'package:coindesk/pages/home_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get_it/get_it.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await loadConfig();
   runApp(const MyApp());
+}
+
+Future<void> loadConfig() async {
+  String configContent = await rootBundle.loadString('config/config.json');
+  Map configData = jsonDecode(configContent);
+  GetIt.instance.registerSingleton<AppConfig>(
+    AppConfig(
+      apiBaseUrl: configData['BASE_API_URL'],
+      apiSecret: configData['API_SECRET_KEY'],
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
