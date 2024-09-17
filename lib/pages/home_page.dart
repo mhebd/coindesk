@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:coindesk/services/http_services.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
@@ -14,6 +16,7 @@ class _HomePageState extends State<HomePage> {
 
   HTTPServices? _http;
   String coin = 'bitcoin';
+  double? height, width;
 
   @override
   void initState() {
@@ -23,11 +26,13 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    height = MediaQuery.of(context).size.height;
+    width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.deepPurple,
         centerTitle: true,
-        toolbarHeight: 100,
+        toolbarHeight: height! * 0.1,
         title: const Text(
           'CoinDesk',
           style: TextStyle(
@@ -47,7 +52,8 @@ class _HomePageState extends State<HomePage> {
               child: Center(
                 child: _renderCoinDropdown(),
               ),
-            )
+            ),
+            _renderCoinInfo()
           ],
         ),
       ),
@@ -95,5 +101,72 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  //
+  // Render coin info
+  Widget _renderCoinInfo() {
+    return FutureBuilder(
+      future: _http!.get('/coins/$coin'),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.hasData) {
+          Map data = jsonDecode(snapshot.data.toString());
+          num price = data['market_data']['current_price']['usd'];
+          double last24hchanges =
+              data['market_data']['price_change_percentage_24h'];
+          String image = data['image']['large'];
+
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  width: 60,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: NetworkImage(image),
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Text(
+                  '\$${price.toStringAsFixed(2)} USD',
+                  style: const TextStyle(
+                    fontSize: 20,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                Text(
+                  '$last24hchanges %',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Colors.white,
+                  ),
+                ),
+                Container(
+                  height: height! * .5,
+                  color: Colors.deepPurple,
+                  padding: const EdgeInsets.all(10),
+                  margin: const EdgeInsets.only(top: 20),
+                  child: SingleChildScrollView(
+                    child: Text(
+                      data['description']['en'],
+                      style: const TextStyle(color: Colors.white70),
+                    ),
+                  ),
+                )
+              ],
+            ),
+          );
+        } else {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      },
+    );
+  }
 }
