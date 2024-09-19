@@ -30,7 +30,7 @@ class _HomePageState extends State<HomePage> {
     width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: Colors.pinkAccent,
         centerTitle: true,
         toolbarHeight: height! * 0.1,
         title: const Text(
@@ -49,7 +49,8 @@ class _HomePageState extends State<HomePage> {
           children: [
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 30),
-              child: Center(
+              child: SizedBox(
+                width: width! * .5,
                 child: _renderCoinDropdown(),
               ),
             ),
@@ -62,22 +63,22 @@ class _HomePageState extends State<HomePage> {
 
   // Render coin dropdown list
   Widget _renderCoinDropdown() {
-    List<String> _coinList = [
-      'bitcoin',
-      'ethereum',
-      'bnb',
-      'solana',
-      'tether',
-      'toncoin'
+    List<Map<String, String>> _coinList = [
+      {"id": "bitcoin", "name": "Bitcoin"},
+      {"id": "ethereum", "name": "Ethereum"},
+      {"id": "binancecoin", "name": "BNB"},
+      {"id": "solana", "name": "Solana"},
+      {"id": "the-open-network", "name": "TonCoin"},
+      {"id": "tether", "name": "TeTher"},
     ];
     List<DropdownMenuItem<String>> _items = _coinList
         .map((coin) => DropdownMenuItem(
-              value: coin,
+              value: coin['id'],
               child: Text(
-                coin,
+                coin['name']!,
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 22,
+                  fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -87,6 +88,7 @@ class _HomePageState extends State<HomePage> {
       items: _items,
       value: coin,
       underline: Container(),
+      isExpanded: true,
       icon: const Icon(
         Icons.arrow_drop_down_sharp,
         color: Colors.white,
