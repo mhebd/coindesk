@@ -49,7 +49,7 @@ class _HomePageState extends State<HomePage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 30),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 25),
               child: SizedBox(
                 width: width! * .5,
                 child: _renderCoinDropdown(),
@@ -123,23 +123,29 @@ class _HomePageState extends State<HomePage> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                GestureDetector(
-                  onLongPress: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (BuildContext _context) {
-                          return ExchangeRatePage(rates: exchangeRates);
-                        },
-                      ),
-                    );
-                  },
-                  child: Container(
-                    width: 60,
-                    height: 60,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: NetworkImage(image),
+                IconButton(
+                  onPressed: () {},
+                  icon: GestureDetector(
+                    onDoubleTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (BuildContext _context) {
+                            return ExchangeRatePage(
+                              rates: exchangeRates,
+                              icon: image,
+                            );
+                          },
+                        ),
+                      );
+                    },
+                    child: Container(
+                      width: 60,
+                      height: 60,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: NetworkImage(image),
+                        ),
                       ),
                     ),
                   ),
