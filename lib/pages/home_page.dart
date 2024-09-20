@@ -184,8 +184,12 @@ class _HomePageState extends State<HomePage> {
             ),
           );
         } else {
-          return const Center(
-            child: CircularProgressIndicator(),
+          return SizedBox(
+            width: width,
+            height: height! * .7,
+            child: const Center(
+              child: CircularProgressIndicator(),
+            ),
           );
         }
       },

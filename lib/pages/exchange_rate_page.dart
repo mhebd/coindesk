@@ -1,20 +1,30 @@
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class ExchangeRatePage extends StatelessWidget {
   final Map rates;
   final String icon;
+  late double _height;
   ExchangeRatePage({super.key, required this.rates, required this.icon});
-  double? height, width;
 
   @override
   Widget build(BuildContext context) {
-    height = MediaQuery.of(context).size.height;
-    width = MediaQuery.of(context).size.width;
+    _height = MediaQuery.of(context).size.height;
+    List<MapEntry<dynamic, dynamic>> rateList = rates.entries.toList();
+
+    if (rateList.isEmpty) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.pinkAccent,
         centerTitle: true,
-        toolbarHeight: height! * 0.1,
+        toolbarHeight: _height * 0.1,
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);
@@ -44,17 +54,17 @@ class ExchangeRatePage extends StatelessWidget {
         ),
       ),
       body: ListView.builder(
-        itemCount: rates.length,
-        itemBuilder: (BuildContext _context, index) {
-          String currencyType = rates.keys.elementAt(index);
-          double currencyValue = rates[currencyType]!;
+        itemCount: rateList.length,
+        clipBehavior: Clip.none,
+        itemBuilder: (context, index) {
+          final rate = rateList[index];
 
           return ListTile(
             onTap: () {},
             tileColor:
                 (index + 1) % 2 == 0 ? const Color.fromRGBO(0, 0, 0, .1) : null,
             title: Text(
-              currencyType.toUpperCase(),
+              rate.key.toUpperCase(),
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 18,
@@ -62,7 +72,7 @@ class ExchangeRatePage extends StatelessWidget {
               ),
             ),
             trailing: Text(
-              currencyValue.toString(),
+              rate.value.toString(),
               style: const TextStyle(
                 color: Colors.white70,
                 fontWeight: FontWeight.bold,
